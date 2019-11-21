@@ -1,22 +1,46 @@
 .App {
-  text-align: center;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.App-logo {
-  height: 40vmin;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.Navbar {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  background-color: lightgray;
+  padding: 8px;
 }
 
-.App-link {
-  color: #09d3ac;
+.Navbar img,
+button,
+input {
+  font-size: 1.1rem;
+  margin-right: 1.5rem;
+}
+
+.Board {
+  margin: 0 auto;
+  margin-top: 70px;
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px lightslategrey solid;
+}
+
+.default {
+  border: 1px lightslategrey solid;
+}
+
+.active-cell {
+  border: 1px rgb(0, 0, 150) solid;
+  background-color: rgb(0, 0, 150);
+}
+
+.player {
+  border: 1px rgb(14, 126, 61) solid;
+  background-color: rgb(17, 165, 79);
+}
+
+.computer {
+  border: 1px rgb(145, 1, 1) solid;
+  background-color: rgb(190, 1, 1);
 }
