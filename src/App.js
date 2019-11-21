@@ -6,35 +6,39 @@ import Winners from './components/pages/Winners';
 import Navbar from './components/Navbar';
 import './App.css';
 
-const boardSize = 500;
-const defaultNumOfRows = 5;
-const defaultDelay = 1000;
-const defaultCellSize = (boardSize - defaultNumOfRows * 2) / defaultNumOfRows;
-let activeCell = {};
-
-const defaultMoves = Array.from(
-  { length: defaultNumOfRows ** 2 },
+const initSettings = { fieldSize: 5, delay: 1000 };
+const initScore = { player: 0, computer: 0 };
+const initGameStatus = { start: false, end: false, result: '' };
+const initMoves = Array.from(
+  { length: initSettings.fieldSize ** 2 },
   () => 'default'
 );
 
 // Shuffle cells ids in order to facilitate random selection within the 'makeMove' function
-const shuffledCells = defaultMoves
-  .map((_, i) => i)
-  .sort(() => Math.random() - 0.5);
+const shuffleArray = arr =>
+  arr.map((_, i) => i).sort(() => Math.random() - 0.5);
+let shuffledCells = shuffleArray(initMoves);
+let activeCell = {};
 
 function App() {
-  const [score, setScore] = useState({ player: 0, computer: 0 });
-  const [moves, setMoves] = useState(defaultMoves); // default, active-cell, player, computer
-  const [gameStarted, setGameStarted] = useState(false);
-  const [settings, setSettings] = useState({
-    numberOfRows: defaultNumOfRows,
-    cellSize: defaultCellSize,
-    delay: defaultDelay
-  });
+  const [playerName, setPlayerName] = useState('');
+  const [settings, setSettings] = useState(initSettings);
+  const [moves, setMoves] = useState(initMoves); // default, active-cell, player, computer
+  const [score, setScore] = useState(initScore);
+  const [gameStatus, setGameStatus] = useState(initGameStatus);
 
-  const handlePlay = () => {
-    setGameStarted(true);
+  const handleStart = () => {
+    setGameStatus({ ...gameStatus, start: true });
     makeMove();
+  };
+
+  const handleRestart = () => {
+    setTimeout(() => {
+      shuffledCells = shuffleArray(initMoves);
+      setMoves(initMoves);
+      setScore(initScore);
+      setGameStatus({ ...initGameStatus, start: true });
+    }, 500);
   };
 
   const handleClick = e => {
@@ -43,12 +47,20 @@ function App() {
   };
 
   const checkGameOver = () => {
-    const target = settings.numberOfRows ** 2 / 2;
+    const target = settings.fieldSize ** 2 / 2;
     return (
       score.player > target ||
       score.computer > target ||
       score.player + score.computer === target * 2
     );
+  };
+
+  const setGameOver = () => {
+    let result;
+    score.player > score.computer && (result = playerName || 'player');
+    score.player < score.computer && (result = 'computer');
+    score.player === score.computer && (result = 'draw');
+    setGameStatus({ ...gameStatus, end: true, result: result });
   };
 
   const updateCellStatus = (cellID, status) =>
@@ -71,42 +83,39 @@ function App() {
     }, settings.delay);
   };
 
-  const reportWinner = () => {
-    let winner;
-    score.player > score.computer && (winner = 'player');
-    score.player < score.computer && (winner = 'computer');
-    score.player === score.computer && (winner = 'even');
-    alert(winner);
-  };
-
   useEffect(() => {
-    gameStarted && !checkGameOver() && makeMove();
+    gameStatus.start && !checkGameOver() && makeMove();
   }, [score]);
 
   useEffect(() => {
-    checkGameOver() && reportWinner();
+    checkGameOver() && setGameOver();
   }, [score]);
 
   return (
     <BrowserRouter>
       <div className='App'>
-        <Navbar play={handlePlay} />
+        <Navbar
+          start={handleStart}
+          restart={handleRestart}
+          inputName={n => setPlayerName(n)}
+          gameStatus={gameStatus}
+        />
         <Switch>
           <Route
             exact
-            path='/'
+            path='/game_in_dots/'
             render={props => (
               <Home
                 {...props}
                 moves={moves}
-                boardSize={boardSize}
                 handleClick={handleClick}
-                cellSize={settings.cellSize}
+                fieldSize={settings.fieldSize}
+                gameStatus={gameStatus}
               />
             )}
           />
-          <Route path='/game-settings' component={Settings} />
-          <Route path='/winners' component={Winners} />
+          <Route path='/game_in_dots/game-settings' component={Settings} />
+          <Route path='/game_in_dots/winners' component={Winners} />
         </Switch>
       </div>
     </BrowserRouter>
