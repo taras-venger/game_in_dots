@@ -4,10 +4,17 @@
   padding: 0;
 }
 
+.Home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .Navbar {
   display: flex;
   align-items: center;
-  background-color: lightgray;
+  justify-content: center;
+  background-color: lightgrey;
   padding: 8px;
 }
 
@@ -16,11 +23,25 @@ button,
 input {
   font-size: 1.1rem;
   margin-right: 1.5rem;
+  padding: 3px;
+}
+
+button {
+  width: 120px;
+}
+
+.MessageBox {
+  width: 500px;
+  height: 90px;
+  line-height: 80px;
+  text-align: center;
+  font-size: 2rem;
+  text-transform: uppercase;
+  font-weight: bold;
 }
 
 .Board {
   margin: 0 auto;
-  margin-top: 70px;
   display: flex;
   flex-wrap: wrap;
   border: 1px lightslategrey solid;
