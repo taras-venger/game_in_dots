@@ -1,13 +1,13 @@
 import React from 'react';
-import '../../App.css';
-import Cell from '../Cell';
-import MessageBox from '../MessageBox';
+import '../App.css';
+import Cell from './Cell';
+import MessageBox from './MessageBox';
 
 const boardSize = 500;
 
 function Home(props) {
   const { moves, fieldSize, handleClick, gameStatus } = props;
-  const cellSize = (boardSize - fieldSize * 2) / fieldSize;
+  const cellSize = (boardSize - 2) / fieldSize;
 
   const renderCells = moves.map((move, i) => (
     <Cell
