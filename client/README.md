@@ -1,4 +1,6 @@
-### Game In Dots
+## Game In Dots
+
+### Description
 
 - user set game difficulty and name
 - press PLAY
@@ -10,3 +12,11 @@
 - button PLAY changes the caption to PLAY AGAIN
 - result of the game need to be send to server on this endpoint this-domain/winners in JSON with two fields winner and date both strings.
 - results in table should be auto update
+
+### Installation
+
+In order to install the application, run the following scripts sequentially:
+
+1. `npm install`
+2. `npm run client-install`
+3. `npm run dev`
