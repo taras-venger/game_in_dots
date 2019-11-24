@@ -26,6 +26,18 @@ function App() {
   const [moves, setMoves] = useState(initMoves); // default, active-cell, player, computer
   const [score, setScore] = useState(initScore);
   const [gameStatus, setGameStatus] = useState(initGameStatus);
+  const [winnersList, setWinnersList] = useState([]); // fetched from DB
+  const [settingOptions, setSettingOptions] = useState([]); // fetched from DB
+
+  useEffect(() => {
+    const getData = async () => {
+      const settings = await fetchData('/game-settings');
+      const winnersList = await fetchData('/winners');
+      setSettingOptions(settings);
+      setWinnersList(winnersList);
+    };
+    getData();
+  }, []);
 
   const handleStart = () => {
     setGameStatus({ ...gameStatus, start: true });
