@@ -103,6 +103,15 @@ function App() {
     checkGameOver() && setGameOver();
   }, [score]);
 
+  // Once the game is over, send result (winner, date) to the server
+  // The response contains upodated list of winner for the 'Leaders board'
+  useEffect(() => {
+    const makeRecord = async () => {
+      const winnersList = await postWinner(gameStatus.result);
+      setWinnersList(winnersList);
+    };
+    gameStatus.end && makeRecord();
+  }, [gameStatus]);
   return (
     <BrowserRouter>
       <div className='App'>
