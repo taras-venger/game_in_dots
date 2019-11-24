@@ -1,29 +1,27 @@
 import React from 'react';
 import '../App.css';
-import { Dropdown, Icon } from 'react-bootstrap';
+import { Dropdown, Icon } from 'semantic-ui-react';
 
 function Settings(props) {
   const { settingOptions, handleSettingsChange } = props;
+  const trigger = <Icon name='setting' size='large' />;
 
   const options = settingOptions.map(el => {
     const { mode, field, delay } = el;
-    return (
-      <Dropdown.Item
-        key={mode}
-        onSelect={() => handleSettingsChange({ mode, field, delay })}
-      >
-        {el.mode}
-      </Dropdown.Item>
-    );
+    return {
+      key: mode,
+      text: mode,
+      onClick: () => handleSettingsChange({ mode, field, delay })
+    };
   });
 
   return (
-    <Dropdown>
-      <Dropdown.Toggle variant='success' id='dropdown-basic'>
-        Pick game mode
-      </Dropdown.Toggle>
-      <Dropdown.Menu>{options}</Dropdown.Menu>
-    </Dropdown>
+    <Dropdown
+      trigger={trigger}
+      options={options}
+      pointing='top left'
+      icon={null}
+    />
   );
 }
 

@@ -1,38 +1,49 @@
 import React from 'react';
 import '../App.css';
 import { Link } from 'react-router-dom';
-import inconSettings from '../assets/settings.svg';
-import iconTrophy from '../assets/trophy.svg';
-import iconHome from '../assets/home.svg';
+import Settings from './Settings';
+import { Button, Icon, Input, Menu } from 'semantic-ui-react';
 
 function Navbar(props) {
-  const { inputName, start, restart, gameStatus } = props;
+  const {
+    inputName,
+    start,
+    restart,
+    gameStatus,
+    settingOptions,
+    handleSettingsChange
+  } = props;
 
   const renderBtn = () =>
     gameStatus.end ? (
-      <button onClick={restart}>Play again</button>
+      <Button color='linkedin' content='Play again' onClick={restart} />
     ) : (
-      <button onClick={start}>Play</button>
+      <Button color='linkedin' content='Play' onClick={start} />
     );
 
   return (
-    <div className='Navbar'>
-      <input
-        type='text'
-        placeholder='Enter your name'
-        onInput={e => inputName(e.target.value)}
-      />
-      {renderBtn()}
-      <Link to='/game_in_dots/game-settings'>
-        <img src={inconSettings} alt='Settings' />
-      </Link>
-      <Link to='/game_in_dots/winners'>
-        <img src={iconTrophy} alt='Winners' />
-      </Link>
-      <Link to='/game_in_dots/'>
-        <img src={iconHome} alt='Home' />
-      </Link>
-    </div>
+    <Menu attached='top' className='Menu'>
+      <Menu.Item>
+        <Input
+          icon='user'
+          placeholder='Enter your name'
+          onChange={e => inputName(e.target.value)}
+        />
+      </Menu.Item>
+      <Menu.Item>{renderBtn()}</Menu.Item>
+      <Menu.Item>
+        <Settings
+          settingOptions={settingOptions}
+          handleSettingsChange={handleSettingsChange}
+        />
+      </Menu.Item>
+      <Menu.Item as={Link} to='/winners'>
+        <Icon name='trophy' size='large' color='black' />
+      </Menu.Item>
+      <Menu.Item as={Link} to='/'>
+        <Icon name='home' size='large' color='black' />
+      </Menu.Item>
+    </Menu>
   );
 }
 
