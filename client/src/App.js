@@ -1,29 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import Home from './components/pages/Home';
-import Settings from './components/pages/Settings';
-import Winners from './components/pages/Winners';
+import Home from './components/Home';
+import Winners from './components/Winners';
 import Navbar from './components/Navbar';
+import 'semantic-ui-css/semantic.min.css';
 import './App.css';
+import { fetchData, postWinner } from './utils/api';
+import { shuffleArray, generateInitMoves } from './utils/otherUtils';
 
-const initSettings = { fieldSize: 5, delay: 1000 };
+const initSettings = { mode: 'easy', field: 4, delay: 1000 };
 const initScore = { player: 0, computer: 0 };
 const initGameStatus = { start: false, end: false, result: '' };
-const initMoves = Array.from(
-  { length: initSettings.fieldSize ** 2 },
-  () => 'default'
-);
-
-// Shuffle cells ids in order to facilitate random selection within the 'makeMove' function
-const shuffleArray = arr =>
-  arr.map((_, i) => i).sort(() => Math.random() - 0.5);
-let shuffledCells = shuffleArray(initMoves);
+const numCells = initSettings.field ** 2;
 let activeCell = {};
+// Shuffle cells ids in order to facilitate random selection within the 'makeMove' function
+let shuffledCells = shuffleArray(numCells);
+const defaultMoves = generateInitMoves(numCells);
 
 function App() {
-  const [playerName, setPlayerName] = useState('');
+  const [playerName, setPlayerName] = useState('Guest');
   const [settings, setSettings] = useState(initSettings);
-  const [moves, setMoves] = useState(initMoves); // default, active-cell, player, computer
+  const [moves, setMoves] = useState(defaultMoves); // default, active-cell, player, computer
   const [score, setScore] = useState(initScore);
   const [gameStatus, setGameStatus] = useState(initGameStatus);
   const [winnersList, setWinnersList] = useState([]); // fetched from DB
@@ -50,11 +47,13 @@ function App() {
     setMoves(() => generateInitMoves(field ** 2));
     shuffledCells = shuffleArray(field ** 2);
   };
+
   const handleRestart = () => {
+    const numCells = settings.field ** 2;
+    shuffledCells = shuffleArray(numCells);
     setTimeout(() => {
-      shuffledCells = shuffleArray(initMoves);
-      setMoves(initMoves);
       setScore(initScore);
+      setMoves(() => generateInitMoves(numCells));
       setGameStatus({ ...initGameStatus, start: true });
     }, 500);
   };
@@ -65,7 +64,7 @@ function App() {
   };
 
   const checkGameOver = () => {
-    const target = settings.fieldSize ** 2 / 2;
+    const target = settings.field ** 2 / 2;
     return (
       score.player > target ||
       score.computer > target ||
@@ -75,9 +74,9 @@ function App() {
 
   const setGameOver = () => {
     let result;
-    score.player > score.computer && (result = playerName || 'player');
-    score.player < score.computer && (result = 'computer');
-    score.player === score.computer && (result = 'draw');
+    score.player > score.computer && (result = playerName);
+    score.player < score.computer && (result = 'Computer AI');
+    score.player === score.computer && (result = 'Draw');
     setGameStatus({ ...gameStatus, end: true, result: result });
   };
 
@@ -118,6 +117,7 @@ function App() {
     };
     gameStatus.end && makeRecord();
   }, [gameStatus]);
+
   return (
     <BrowserRouter>
       <div className='App'>
@@ -126,23 +126,27 @@ function App() {
           restart={handleRestart}
           inputName={n => setPlayerName(n)}
           gameStatus={gameStatus}
+          settingOptions={settingOptions}
+          handleSettingsChange={handleSettingsChange}
         />
         <Switch>
           <Route
             exact
-            path='/game_in_dots/'
+            path='/'
             render={props => (
               <Home
                 {...props}
                 moves={moves}
                 handleClick={handleClick}
-                fieldSize={settings.fieldSize}
+                fieldSize={settings.field}
                 gameStatus={gameStatus}
               />
             )}
           />
-          <Route path='/game_in_dots/game-settings' component={Settings} />
-          <Route path='/game_in_dots/winners' component={Winners} />
+          <Route
+            path='/winners'
+            render={props => <Winners {...props} winnersList={winnersList} />}
+          />
         </Switch>
       </div>
     </BrowserRouter>
