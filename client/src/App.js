@@ -44,6 +44,12 @@ function App() {
     makeMove();
   };
 
+  const handleSettingsChange = selectedOption => {
+    const { field, delay } = selectedOption;
+    setSettings({ field, delay });
+    setMoves(() => generateInitMoves(field ** 2));
+    shuffledCells = shuffleArray(field ** 2);
+  };
   const handleRestart = () => {
     setTimeout(() => {
       shuffledCells = shuffleArray(initMoves);
