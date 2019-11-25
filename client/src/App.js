@@ -41,19 +41,21 @@ function App() {
     makeMove();
   };
 
-  const handleSettingsChange = selectedOption => {
-    const { field, delay } = selectedOption;
-    setSettings({ field, delay });
-    setMoves(() => generateInitMoves(field ** 2));
-    shuffledCells = shuffleArray(field ** 2);
+  const handleSettingsChange = newSettings => setSettings({ ...newSettings });
+
+  const resetMovesOnSettingsChange = () => {
+    shuffledCells = shuffleArray(settings.field ** 2);
+    setMoves(() => generateInitMoves(settings.field ** 2));
   };
 
+  useEffect(() => {
+    resetMovesOnSettingsChange();
+  }, [settings]);
+
   const handleRestart = () => {
-    const numCells = settings.field ** 2;
-    shuffledCells = shuffleArray(numCells);
     setTimeout(() => {
+      resetMovesOnSettingsChange();
       setScore(initScore);
-      setMoves(() => generateInitMoves(numCells));
       setGameStatus({ ...initGameStatus, start: true });
     }, 500);
   };
