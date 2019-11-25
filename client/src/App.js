@@ -103,11 +103,9 @@ function App() {
   };
 
   useEffect(() => {
-    gameStatus.start && !checkGameOver() && makeMove();
-  }, [score]);
-
-  useEffect(() => {
-    checkGameOver() && setGameOver();
+    const gameOver = checkGameOver();
+    gameStatus.start && !gameOver && makeMove();
+    gameOver && setGameOver();
   }, [score]);
 
   // Once the game is over, send result (winner, date) to the server
