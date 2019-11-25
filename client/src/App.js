@@ -28,10 +28,16 @@ function App() {
 
   useEffect(() => {
     const getData = async () => {
-      const settings = await fetchData('/game-settings');
-      const winnersList = await fetchData('/winners');
-      setSettingOptions(settings);
-      setWinnersList(winnersList);
+      try {
+        const settings = await fetchData('/game-settings');
+        const winnersList = await fetchData('/winners');
+        setSettingOptions(settings);
+        setWinnersList(winnersList);
+      } catch (err) {
+        alert(
+          'It seems like your device is offline. Only limited functionality is available'
+        );
+      }
     };
     getData();
   }, []);
